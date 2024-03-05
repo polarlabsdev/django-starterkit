@@ -36,8 +36,8 @@ DEBUG = env('DEBUG')
 # exception if SECRET_KEY not in os.environ
 SECRET_KEY = env('SECRET_KEY')
 
-# Space separated lists of hosts from the .env file
-ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(' ')
+# Comma separated lists of hosts from the .env file
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
 
 
 # Application definition

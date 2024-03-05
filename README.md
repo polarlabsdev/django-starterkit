@@ -16,7 +16,7 @@ For this project we are using [poetry](https://python-poetry.org/docs) to simpli
 
 **3. Database**
 
-Before you can migrate you need to install a local postgresql. There are many good tutorials online depending on your OS. Create a database and user just for this project and copy `.env.dist` to a new file called `.env` at the root of your project (this will be ignored by git). Update your newly copied `.env` file with relevant values to replace the ones in the template. You will never need to interact directly with the database, the ORM will do everything for you. If you want to explore freely, you can run `python manage.py shell` and import your models just as you would in application code.
+Before you can migrate you need to install a local postgresql. There are many good tutorials online depending on your OS. Create a database and user just for this project and copy `.env.example` to a new file called `.env` at the root of your project (this will be ignored by git). Update your newly copied `.env` file with relevant values to replace the ones in the template. You will never need to interact directly with the database, the ORM will do everything for you. If you want to explore freely, you can run `python manage.py shell` and import your models just as you would in application code.
 
 **4. Static Files (TBD)**
 Static files are files like images, or JS files that aren't dynamically generated in our API routes. They will be served from our Digital Ocean CDN using `django-storages`. To generate them for local development run `python manage.py collectstatic`, they will be gitignored.
