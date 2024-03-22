@@ -73,3 +73,13 @@ To get more help on the tools used in this project check out:
 - [Bandit](https://github.com/PyCQA/bandit)
 - [Safety](https://github.com/pyupio/safety)
 - [Understanding async python](https://www.b-list.org/weblog/2022/aug/16/async/)
+
+## To be documented
+
+- usage of django storages + the vars in .env
+- usage of core/management
+- usage of base models
+- usage of case user model
+- ~~usage of .env~~
+- core utils
+- configuring jet

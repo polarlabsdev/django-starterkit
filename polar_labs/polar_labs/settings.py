@@ -16,15 +16,16 @@ import os
 
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    SAVE_STATIC_FILES_CDN=(bool, False)
 )
 
 
 # Set the project base directory
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -37,19 +38,22 @@ DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 
 # Comma separated lists of hosts from the .env file
-ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
-
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').strip().split(',')
 
 # Application definition
 
 INSTALLED_APPS = [
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core'
+    'rest_framework',
+    'django_summernote',
+    'core',
+    'blog'
 ]
 
 MIDDLEWARE = [
@@ -126,10 +130,67 @@ USE_I18N = True
 USE_TZ = True
 
 
+# DJANGO STORAGES CONFIG
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {}
+    },
+    # this means use the local storage on your computer
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+if env('SAVE_STATIC_FILES_CDN'):
+    # Set admin files to be retrieved from our CDN instead of local storage
+    STORAGES['staticfiles'] = {'BACKEND': 'storages.backends.s3boto3.S3StaticStorage'}
+
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
+AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL')
+AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN')
+AWS_S3_ACCESS_KEY_ID = env('AWS_S3_ACCESS_KEY_ID')
+AWS_S3_SECRET_ACCESS_KEY = env('AWS_S3_SECRET_ACCESS_KEY')
+
+# S3 File Prefixes
+S3_BLOG_DIR = 'blog'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# Summernote
+SUMMERNOTE_CONFIG = {
+    'summernote': {
+        # Toolbar customization
+        # https://summernote.org/deep-dive/#custom-toolbar-popover
+        'toolbar': [
+            ['style', ['style']],
+            [
+                'font',
+                [
+                    'bold',
+                    'italic',
+                    'underline',
+                    'superscript',
+                    'subscript',
+                    'strikethrough',
+                    'clear',
+                ],
+            ],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ]
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -137,3 +198,39 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "core.PolarLabsUser"
+
+# REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 24
+}
+
+# NOTE: if you are working on a product that you expect to evolve over time,
+#       particularly a mobile app, consider implementing versioning of the API
+#       early. This will allow you to maintain reverse compatibility easily, and
+#       disallow deprecated apps from accessing your API in time. You can handle those
+#       errors as a prompt to update the app.
+#       See: https://www.django-rest-framework.org/api-guide/versioning/ 
+
+# Django Admin Panel
+# https://django-jet-reboot.readthedocs.io/en/latest/config_file.html
+JET_DEFAULT_THEME = 'light-blue'
+JET_SIDE_MENU_COMPACT = True
+# JET_SIDE_MENU_ITEMS = [
+#     {
+#         'label': 'Helpful Links',
+#         'items': [
+#             {
+#                 'label': 'Documentation',
+#                 'url': '',
+#                 'url_blank': True,
+#             },
+#         ],
+#     },
+#     {
+#         'label': 'User Management',
+#         'items': [
+#             {'name': 'auth.group'},
+#         ],
+#     },
+# ]
