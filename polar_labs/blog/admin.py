@@ -46,6 +46,6 @@ class BlogPostAdmin(BaseAdmin, SummernoteModelAdmin):
 
   inlines = [BlogPostTagInline]
   search_fields = ['name', 'content']
-  readonly_fields = ('id', 'created', 'updated', 'banner_preview', 'thumbnail_preview')
+  readonly_fields = ('id', 'created', 'updated', 'banner_preview', 'thumbnail_preview', 'slug')
   summernote_fields = ('content',)
   list_display_links = ('id', 'thumbnail_preview_thumb', 'name')
