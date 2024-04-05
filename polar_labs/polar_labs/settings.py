@@ -17,7 +17,8 @@ import os
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False),
-    SAVE_STATIC_FILES_CDN=(bool, False)
+    SAVE_STATIC_FILES_CDN=(bool, False),
+    LOG_LEVEL=(str, 'INFO')
 )
 
 
@@ -64,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.gen_request_id.RequestLogMiddleware',
 ]
 
 ROOT_URLCONF = 'polar_labs.urls'
@@ -128,6 +130,39 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# Logging Config
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '[%(asctime)s] [%(levelname)s] %(name)s:%(module)s: %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        },
+    },
+    'loggers': {
+        '': {  # root logger
+            'level': env('LOG_LEVEL'),
+            'handlers': ['console'],
+        },
+        'urllib3.util.retry': {  # just log retries from urllib3
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        'django': {
+            'level': env('LOG_LEVEL'),
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
+}
 
 
 # DJANGO STORAGES CONFIG
