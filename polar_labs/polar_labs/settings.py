@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'rest_framework',
+	'django_filters',
 	'django_summernote',
 	'core',
 	'blog',
@@ -236,7 +237,10 @@ AUTH_USER_MODEL = 'core.PolarLabsUser'
 REST_FRAMEWORK = {
 	'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 	'PAGE_SIZE': 24,
+	'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
+
+FILTERS_DEFAULT_LOOKUP_EXPR = 'icontains'
 
 # NOTE: if you are working on a product that you expect to evolve over time,
 #       particularly a mobile app, consider implementing versioning of the API

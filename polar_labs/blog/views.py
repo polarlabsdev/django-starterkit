@@ -7,6 +7,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 class BlogPostList(ListAPIView):
 	queryset = BlogPost.objects.all()
 	serializer_class = BlogPostSerializer
+	filterset_fields = ('tags__name',)
 
 
 class BlogPostTagList(ListAPIView):
