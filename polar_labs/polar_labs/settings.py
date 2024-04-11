@@ -10,15 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-from pathlib import Path
-import environ
 import os
+from pathlib import Path
+
+import environ
 
 env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False),
-    SAVE_STATIC_FILES_CDN=(bool, False),
-    LOG_LEVEL=(str, 'INFO')
+	# set casting, default value
+	DEBUG=(bool, False),
+	SAVE_STATIC_FILES_CDN=(bool, False),
+	LOG_LEVEL=(str, 'INFO'),
 )
 
 
@@ -44,46 +45,46 @@ ALLOWED_HOSTS = env('ALLOWED_HOSTS').strip().split(',')
 # Application definition
 
 INSTALLED_APPS = [
-    'jet',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'django_summernote',
-    'core',
-    'blog'
+	'jet',
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'rest_framework',
+	'django_summernote',
+	'core',
+	'blog',
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'core.middleware.gen_request_id.RequestLogMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'core.middleware.gen_request_id.RequestLogMiddleware',
 ]
 
 ROOT_URLCONF = 'polar_labs.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': [],
+		'APP_DIRS': True,
+		'OPTIONS': {
+			'context_processors': [
+				'django.template.context_processors.debug',
+				'django.template.context_processors.request',
+				'django.contrib.auth.context_processors.auth',
+				'django.contrib.messages.context_processors.messages',
+			],
+		},
+	},
 ]
 
 WSGI_APPLICATION = 'polar_labs.wsgi.application'
@@ -93,11 +94,11 @@ WSGI_APPLICATION = 'polar_labs.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    # read os.environ['DATABASE_URL'] and raises
-    # ImproperlyConfigured exception if not found
-    #
-    # The db() method is an alias for db_url().
-    'default': env.db()
+	# read os.environ['DATABASE_URL'] and raises
+	# ImproperlyConfigured exception if not found
+	#
+	# The db() method is an alias for db_url().
+	'default': env.db()
 }
 
 
@@ -105,18 +106,18 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+	{
+		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+	},
 ]
 
 
@@ -133,53 +134,50 @@ USE_TZ = True
 
 # Logging Config
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'default': {
-            'format': '[%(asctime)s] [%(levelname)s] %(name)s:%(module)s: %(message)s',
-            'datefmt': '%Y-%m-%d %H:%M:%S',
-        },
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'default',
-        },
-    },
-    'loggers': {
-        '': {  # root logger
-            'level': env('LOG_LEVEL'),
-            'handlers': ['console'],
-        },
-        'urllib3.util.retry': {  # just log retries from urllib3
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        },
-        'django': {
-            'level': env('LOG_LEVEL'),
-            'handlers': ['console'],
-            'propagate': False,
-        },
-    },
+	'version': 1,
+	'disable_existing_loggers': False,
+	'formatters': {
+		'default': {
+			'format': '[%(asctime)s] [%(levelname)s] %(name)s:%(module)s: %(message)s',
+			'datefmt': '%Y-%m-%d %H:%M:%S',
+		},
+	},
+	'handlers': {
+		'console': {
+			'class': 'logging.StreamHandler',
+			'formatter': 'default',
+		},
+	},
+	'loggers': {
+		'': {  # root logger
+			'level': env('LOG_LEVEL'),
+			'handlers': ['console'],
+		},
+		'urllib3.util.retry': {  # just log retries from urllib3
+			'level': 'DEBUG',
+			'handlers': ['console'],
+		},
+		'django': {
+			'level': env('LOG_LEVEL'),
+			'handlers': ['console'],
+			'propagate': False,
+		},
+	},
 }
 
 
 # DJANGO STORAGES CONFIG
 STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.s3.S3Storage",
-        "OPTIONS": {}
-    },
-    # this means use the local storage on your computer
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
+	'default': {'BACKEND': 'storages.backends.s3.S3Storage', 'OPTIONS': {}},
+	# this means use the local storage on your computer
+	'staticfiles': {
+		'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+	},
 }
 
 if env('SAVE_STATIC_FILES_CDN'):
-    # Set admin files to be retrieved from our CDN instead of local storage
-    STORAGES['staticfiles'] = {'BACKEND': 'storages.backends.s3boto3.S3StaticStorage'}
+	# Set admin files to be retrieved from our CDN instead of local storage
+	STORAGES['staticfiles'] = {'BACKEND': 'storages.backends.s3boto3.S3StaticStorage'}
 
 AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
 AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
@@ -203,28 +201,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Summernote
 SUMMERNOTE_CONFIG = {
-    'summernote': {
-        # Toolbar customization
-        # https://summernote.org/deep-dive/#custom-toolbar-popover
-        'toolbar': [
-            ['style', ['style']],
-            [
-                'font',
-                [
-                    'bold',
-                    'italic',
-                    'underline',
-                    'superscript',
-                    'subscript',
-                    'strikethrough',
-                    'clear',
-                ],
-            ],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['insert', ['link']],
-            ['view', ['fullscreen', 'codeview', 'help']],
-        ]
-    },
+	'summernote': {
+		# Toolbar customization
+		# https://summernote.org/deep-dive/#custom-toolbar-popover
+		'toolbar': [
+			['style', ['style']],
+			[
+				'font',
+				[
+					'bold',
+					'italic',
+					'underline',
+					'superscript',
+					'subscript',
+					'strikethrough',
+					'clear',
+				],
+			],
+			['para', ['ul', 'ol', 'paragraph']],
+			['insert', ['link']],
+			['view', ['fullscreen', 'codeview', 'help']],
+		]
+	},
 }
 
 # Default primary key field type
@@ -232,12 +230,12 @@ SUMMERNOTE_CONFIG = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "core.PolarLabsUser"
+AUTH_USER_MODEL = 'core.PolarLabsUser'
 
 # REST Framework
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 24
+	'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+	'PAGE_SIZE': 24,
 }
 
 # NOTE: if you are working on a product that you expect to evolve over time,
@@ -245,7 +243,7 @@ REST_FRAMEWORK = {
 #       early. This will allow you to maintain reverse compatibility easily, and
 #       disallow deprecated apps from accessing your API in time. You can handle those
 #       errors as a prompt to update the app.
-#       See: https://www.django-rest-framework.org/api-guide/versioning/ 
+#       See: https://www.django-rest-framework.org/api-guide/versioning/
 
 # Django Admin Panel
 # https://django-jet-reboot.readthedocs.io/en/latest/config_file.html

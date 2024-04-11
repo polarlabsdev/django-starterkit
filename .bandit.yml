@@ -1,0 +1,1 @@
+exclude_dirs: ["*/management/commands/", "*/tests.py", "tests/", "integ_tests/", "env/", 'base_tests.py']

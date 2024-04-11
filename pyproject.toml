@@ -2,8 +2,24 @@
 name = "polar_labs"
 version = "0.1.0"
 description = ""
-authors = ["Mike Lecomte <m.lecomte@gmail.com>"]
+authors = ["Mike Lecomte <mike.lecomte@polarlabs.ca>"]
 readme = "README.md"
+
+[tool.poe]
+poetry_command = "exec"
+
+[tool.poe.tasks]
+# task sequences
+pc_init = ["precommit_install", "precommit_run"]
+check = ["lint", "format_check", "bandit"]
+# tasks
+precommit_install = "pre-commit install"
+precommit_run = "pre-commit run --all-files"
+lint = "ruff check polar_labs/"
+lint_fix = "ruff check --fix polar_labs/"
+format = "ruff format polar_labs/"
+format_check = "ruff format --check polar_labs/"
+bandit = "bandit -r polar_labs/ -c .bandit.yml"
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -17,6 +33,37 @@ django-summernote = "^0.8.20.0"
 django-jet-reboot = "^1.3.7"
 django-autoslug = "^1.9.9"
 
+[tool.poetry.group.dev.dependencies]
+bandit = "^1.7.8"
+pre-commit = "^3.7.0"
+ruff = "^0.3.6"
+
+[tool.ruff]
+exclude = ["*/migrations/"]
+line-length = 100
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "tab"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+  # pycodestyle
+  "E",
+  # Pyflakes
+  "F",
+  # pyupgrade
+  "UP",
+  # flake8-bugbear
+  "B",
+  # flake8-simplify
+  "SIM",
+  # isort
+  "I",
+]
+# https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+ignore = ["W191", "E111", "E114", "E117", "D206", "D300", "Q000", "Q001", "Q002", "Q003", "COM812", "COM819", "ISC001", "ISC002", "E501"]
 
 [build-system]
 requires = ["poetry-core"]
