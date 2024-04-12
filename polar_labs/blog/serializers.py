@@ -1,5 +1,6 @@
-from blog.models import BlogPost, BlogPostTag
 from rest_framework.serializers import ModelSerializer
+
+from blog.models import BlogPost, BlogPostTag
 
 
 class BlogPostTagSerializer(ModelSerializer):

@@ -1,7 +1,8 @@
-from blog.models import BlogPost, BlogPostTag
 from core.base_admin import BaseAdmin
 from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
+
+from blog.models import BlogPost, BlogPostTag
 
 
 @admin.register(BlogPostTag)

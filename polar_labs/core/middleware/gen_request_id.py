@@ -1,7 +1,8 @@
 import logging
 
-from core.utils import generate_request_id
 from django.utils.deprecation import MiddlewareMixin
+
+from core.utils import generate_request_id
 
 # import sentry_sdk
 

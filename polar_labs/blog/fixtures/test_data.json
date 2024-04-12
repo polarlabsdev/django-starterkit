@@ -1,0 +1,50 @@
+[
+  {
+    "model": "blog.blogpost",
+    "pk": 1,
+    "fields": {
+      "created": "2024-03-20T21:51:01.775Z",
+      "updated": "2024-03-20T23:50:27.612Z",
+      "name": "Test Blog",
+      "slug": "title-slug",
+      "content": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et dui nibh. Fusce ornare urna est, at commodo velit venenatis euismod. Phasellus ac ex ligula. Fusce quis tristique velit. Nunc dapibus, mi nec ultrices interdum, ipsum odio pretium urna, a tempus nisi lacus in magna. Aliquam erat volutpat. Vivamus facilisis, lacus id efficitur dignissim, dui tellus egestas ex, vitae lacinia justo diam vitae urna. Mauris placerat facilisis feugiat. Pellentesque egestas dui ut tellus imperdiet, a viverra ligula sagittis. Sed mauris nibh, varius non erat eget, semper dignissim mi.</p><p>Sed blandit dolor at nisi egestas vehicula. Suspendisse potenti. Duis condimentum, tellus a lacinia auctor, justo erat tincidunt ante, at tristique ante turpis eu nisi. Proin finibus eros et nisi malesuada molestie in vitae justo. Morbi dapibus felis ut commodo vehicula. Nullam convallis porta ante non vulputate. Nulla ultrices velit eu varius dapibus. Praesent tempor quam nec turpis pellentesque, at varius libero accumsan. Aliquam facilisis nulla ac tempor rutrum. Vivamus iaculis sit amet enim a hendrerit. Morbi in mauris at orci dignissim ornare sit amet eu enim. Mauris magna lacus, tempor at mauris sit amet, maximus scelerisque nulla. Maecenas in felis eu nisi elementum vestibulum.</p><p>Duis aliquet dictum magna quis posuere. Nulla consectetur blandit mauris quis congue. Nunc non justo maximus, lobortis ipsum tincidunt, gravida metus. Nulla purus arcu, feugiat pulvinar ipsum vel, tincidunt lobortis massa. Sed convallis diam interdum, egestas odio non, efficitur dolor. Phasellus posuere libero metus, ac bibendum est tempor in. In mattis ante orci, vel lobortis turpis lobortis eu. Interdum et malesuada fames ac ante ipsum primis in faucibus. Cras urna risus, tempor sed diam at, aliquet ultrices sem. Vestibulum sollicitudin maximus dolor, quis tincidunt justo pulvinar quis. Donec in magna a orci malesuada dapibus. Donec eget ligula at nulla porta luctus non a mauris. Suspendisse rutrum eget eros ac accumsan. Nunc dapibus, dui at aliquam vulputate, libero dui iaculis massa, sit amet porta turpis erat a neque.</p><p>Donec sed ultricies orci, dapibus molestie metus. Nunc convallis nec quam eget imperdiet. Proin fermentum ullamcorper nisl, eget tincidunt ligula pellentesque quis. Suspendisse id pharetra turpis, ullamcorper finibus orci. Ut et facilisis dolor. Integer non metus a ex egestas luctus nec et leo. Cras feugiat eros eget lacus tempus, eu hendrerit nunc fermentum. Cras sed iaculis magna, sit amet rutrum felis. Nullam efficitur ligula ac nibh aliquet iaculis.</p><p>Aliquam porta nulla maximus tellus pharetra bibendum. Pellentesque in leo in quam malesuada faucibus. Etiam varius in ligula eget eleifend. Donec non efficitur tellus. Maecenas tristique magna metus, in facilisis nulla tincidunt eget. Sed egestas lacinia enim, quis tempor neque congue vitae. Suspendisse condimentum congue massa, eu gravida purus tincidunt at.</p>",
+      "banner": "blog/Gemini_Generated_Image_6.jpg",
+      "thumbnail": "blog/Gemini_Generated_Image_13.jpg",
+      "tags": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "blog.blogpost",
+    "pk": 2,
+    "fields": {
+      "created": "2024-04-12T01:01:31.953Z",
+      "updated": "2024-04-12T01:01:31.953Z",
+      "name": "Fake Blog Posts",
+      "slug": "fake-blog-posts",
+      "content": "<p style=\"margin-bottom: 15px; padding: 0px; text-align: justify; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif;\">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur laoreet nulla eu maximus sagittis. Praesent ac velit eget nunc semper gravida. Praesent cursus viverra augue id tristique. Morbi elementum feugiat risus, eget efficitur leo dignissim vel. Nulla tempus mi at velit feugiat faucibus. Sed felis ipsum, viverra id congue eu, laoreet nec magna. Duis gravida enim imperdiet enim vehicula, nec molestie dolor tincidunt. Etiam at facilisis sapien. Quisque molestie imperdiet sollicitudin. Morbi pellentesque at neque at commodo.</p><p style=\"margin-bottom: 15px; padding: 0px; text-align: justify; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif;\">Nunc accumsan rhoncus dignissim. Pellentesque feugiat ullamcorper lorem, id imperdiet eros maximus id. Sed neque urna, mollis eget mattis sed, maximus at sapien. Quisque eu aliquet mauris, id dictum neque. In suscipit rutrum nunc, placerat imperdiet sapien dapibus at. Nullam vitae nulla aliquet, iaculis mauris at, ultrices neque. Nam in volutpat turpis. Fusce fringilla mollis placerat.</p><p style=\"margin-bottom: 15px; padding: 0px; text-align: justify; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif;\">Duis imperdiet porttitor placerat. In gravida magna sit amet sapien consectetur, vitae blandit felis consequat. Mauris maximus, nisi et lacinia lacinia, arcu eros ullamcorper ex, ac pellentesque erat odio non turpis. Morbi tristique vitae neque sit amet dictum. Proin venenatis sit amet felis nec blandit. Nam dictum imperdiet nibh sit amet imperdiet. Vivamus iaculis, sem ac vehicula sodales, leo massa tincidunt justo, in sodales enim arcu quis turpis. In et purus mi. Ut tincidunt eu mauris non blandit. Nam id dolor a nisl fringilla malesuada. Donec scelerisque erat et pellentesque congue. Vivamus non placerat diam. Duis ut dolor sem. Phasellus rutrum blandit nibh accumsan blandit. Nunc elit enim, pulvinar vitae tincidunt eu, finibus in magna.</p><p style=\"margin-bottom: 15px; padding: 0px; text-align: justify; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif;\">Aenean in neque eget ante fermentum porttitor. Pellentesque elit urna, posuere sed dolor sit amet, egestas sollicitudin velit. Integer sed malesuada purus, eu sollicitudin nulla. Nam mauris sem, finibus quis sapien interdum, venenatis pulvinar nibh. Mauris non pellentesque nisi. Quisque dapibus leo at ligula lobortis laoreet. Nunc porttitor imperdiet tempus.</p><p style=\"margin-bottom: 15px; padding: 0px; text-align: justify; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif;\">Duis molestie, ante a pharetra varius, nunc dui posuere ex, non efficitur mauris enim eget mauris. Morbi ac elementum libero, et dignissim orci. Morbi metus tellus, blandit quis elit quis, lobortis elementum erat. Aenean sollicitudin elit sed diam pharetra, nec vehicula nulla condimentum. Vestibulum facilisis fringilla mi, eu finibus nisi posuere at. Nam auctor enim sit amet ligula egestas semper. Ut id nulla a massa condimentum tempus. Praesent eget leo neque. Fusce sit amet purus sit amet ex luctus convallis et mattis neque. Donec tempus pretium risus, in sodales mauris rhoncus at. Nullam ultricies leo tortor, ut tempus ipsum egestas eget.</p>",
+      "banner": "blog/logo-text-full-darkmode.png",
+      "thumbnail": "blog/logo-full-darkmode.png",
+      "tags": []
+    }
+  },
+  {
+    "model": "blog.blogposttag",
+    "pk": 1,
+    "fields": {
+      "created": "2024-03-20T23:39:37.280Z",
+      "updated": "2024-03-20T23:39:37.280Z",
+      "name": "Blog Posts"
+    }
+  },
+  {
+    "model": "blog.blogposttag",
+    "pk": 2,
+    "fields": {
+      "created": "2024-03-20T23:39:41.688Z",
+      "updated": "2024-03-20T23:39:41.688Z",
+      "name": "Case Studies"
+    }
+  }
+]
