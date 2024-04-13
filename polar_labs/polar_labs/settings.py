@@ -17,17 +17,18 @@ import environ
 
 env = environ.Env(
 	# set casting, default value
-	DEBUG=(bool, False),
+	DEBUG=(bool, True),
 	SAVE_STATIC_FILES_CDN=(bool, False),
 	LOG_LEVEL=(str, 'INFO'),
 )
 
 
 # Set the project base directory
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
+CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=True)
+environ.Env.read_env(os.path.join(CONFIG_DIR, '.env'), overwrite=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -42,7 +43,17 @@ SECRET_KEY = env('SECRET_KEY')
 # Comma separated lists of hosts from the .env file
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').strip().split(',')
 
-# Application definition
+# We separate the apps that we wrote into their own list
+# so they can be imported in other places to differentiate
+# from third party apps. An example is this script:
+# polar_labs/core/management/commands/ensure_migrations.py
+# Some third party deps make mistakes and don't make all their
+# migrations and it causes our check to fail CI every time. This
+# way we can check just our own apps.
+PROJECT_APPS = [
+	'core',
+	'blog',
+]
 
 INSTALLED_APPS = [
 	'jet',
@@ -55,9 +66,8 @@ INSTALLED_APPS = [
 	'rest_framework',
 	'django_filters',
 	'django_summernote',
-	'core',
-	'blog',
 ]
+INSTALLED_APPS.extend(PROJECT_APPS)
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# set in dockerfile
+cd $APP_HOME
+
+# change to your django project folder
+cd polar_labs
+python manage.py migrate
+python manage.py collectstatic --noinput
+
+# superuser settings passed from env set in bitbucket
+python manage.py ensure_adminuser \
+    --username=$DJANGO_SUPERUSER_USERNAME \
+    --password=$DJANGO_SUPERUSER_PASSWORD
+
+# daphne must be in pyproject.toml
+daphne -b 0.0.0.0 -p 8000 polar_labs.asgi:application

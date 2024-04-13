@@ -1,13 +1,11 @@
 import logging
 
-from django.utils.deprecation import MiddlewareMixin
-
 from core.utils import generate_request_id
 
 # import sentry_sdk
 
 
-class RequestLogMiddleware(MiddlewareMixin):
+class RequestLogMiddleware:
 	def __init__(self, get_response):
 		# One-time configuration and initialization.
 		self.get_response = get_response

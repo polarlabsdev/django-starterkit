@@ -1,5 +1,6 @@
 from io import StringIO
 
+from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 
@@ -12,7 +13,9 @@ class Command(BaseCommand):
 
 		with StringIO() as out:
 			try:
-				call_command('makemigrations', '--dry-run', stdout=out, stderr=out)
+				args = ['--dry-run']
+				args.extend(settings.PROJECT_APPS)
+				call_command('makemigrations', *args, stdout=out, stderr=out)
 
 			except CommandError as e:
 				if "run 'python manage.py makemigrations --merge'" in str(e):
@@ -22,7 +25,7 @@ class Command(BaseCommand):
 						e,
 					)
 
-			if not out.getvalue().strip() == 'No changes detected':
+			if 'No changes detected' not in out.getvalue().strip():
 				raise Exception(
 					f'Missing migration files, did you forget to run makemigrations and commit the migration files? \n'
 					f'Output was: {out.getvalue()}'

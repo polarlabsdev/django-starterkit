@@ -6,6 +6,7 @@ __pycache__
 db.sqlite3
 media
 polar_labs/static
+static/
 
 # Tooling
 .ruff_cache

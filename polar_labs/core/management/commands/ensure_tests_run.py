@@ -17,7 +17,7 @@ class Command(BaseCommand):
 					dirs.remove(d)
 
 			# if this is not the root, there must be an __init__
-			if root != settings.BASE_DIR and '__init__.py' not in files:
+			if root != str(settings.BASE_DIR) and '__init__.py' not in files:
 				raise ValueError(f'No init file found in {root}')
 
 			# ensure the file names follow the unittest pattern
@@ -28,8 +28,7 @@ class Command(BaseCommand):
 					and file_name
 					not in (
 						'ensure_tests_run.py',
-						'generate_test_jwt.py',
-						'send_test_push.py',
+						'base_tests.py',
 					)
 				):
 					raise ValueError(
@@ -45,7 +44,7 @@ class Command(BaseCommand):
 					with open(Path(root) / file_name) as f:
 						for line in f:
 							match = re.search(
-								r'class .*?(BabblyApiTestCase|IntegLiveServerTestCase|TestCase).*?\)',
+								r'class .*?(BaseUnitTest|LiveApiTestCase|TestCase).*?\)',
 								line,
 								re.I,
 							)
@@ -60,7 +59,7 @@ class Command(BaseCommand):
 								else:
 									unique_tests[current_class] = set()
 
-							match = re.search(r'def .*?test.*?\(', line, re.I)
+							match = re.search(r'\bdef\s+(?!_)\w.*?\(', line, re.I)
 							if match:
 								match = match.group(0)
 
@@ -71,7 +70,7 @@ class Command(BaseCommand):
 										f'sorry, this script is still not smart enough.'
 									)
 								unique_tests[current_class].add(match)
-								if not re.search(r'def (_|test|setup)', line, re.I):
+								if not re.search(r'def (_|test|setup|teardown)', line, re.I):
 									raise ValueError(
 										f"The method looks like a test, but it won't run! Must start with "
 										f"'test', was: {line}. If this is not meant to be a test you can make it start "

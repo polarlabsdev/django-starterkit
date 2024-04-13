@@ -1,0 +1,16 @@
+# Please note this file is to run a development image on your local machine easily.
+# For production deployments we recommend using our kubernetes helm templates.
+
+# use `docker build . -t polar_labs_api` to build a dev image from this directory.
+# use `docker compose up -d` in thsi directory to start the container
+
+# anywhere you are using localhost now make sure to switch to the gateway ip of the docker's network
+
+services:
+  polar_labs_api:
+    image: polar_labs_api
+    container_name: polar_labs_api
+    env_file: .env
+    ports:
+      - 8000:8000
+    restart: unless-stopped

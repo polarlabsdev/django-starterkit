@@ -1,6 +1,7 @@
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+
 from blog.models import BlogPost, BlogPostTag
 from blog.serializers import BlogPostSerializer, BlogPostTagSerializer
-from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 
 # https://www.django-rest-framework.org/api-guide/generic-views/#genericapiview

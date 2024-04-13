@@ -16,7 +16,7 @@ class BlogPost(BaseModel):
 	name = models.CharField(null=False, blank=False, max_length=256)
 	slug = AutoSlugField(populate_from='name')
 	content = models.TextField(null=False, blank=False)
-	tags = models.ManyToManyField(BlogPostTag, related_name='tags')
+	tags = models.ManyToManyField(BlogPostTag, related_name='posts')
 	banner = models.FileField(null=False, blank=False, upload_to=settings.S3_BLOG_DIR)
 	thumbnail = models.FileField(null=False, blank=False, upload_to=settings.S3_BLOG_DIR)
 
