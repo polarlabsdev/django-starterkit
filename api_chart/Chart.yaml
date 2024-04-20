@@ -1,0 +1,13 @@
+apiVersion: v2
+name: api_chart
+description: Helm chart for deploying a Polar Labs API
+
+type: application
+
+version: 0.1.0
+appVersion: "0.1.0"
+
+dependencies:
+  - name: pl-standard-chart
+    version: 1.0.1
+    repository: https://helm.polarlabs.ca

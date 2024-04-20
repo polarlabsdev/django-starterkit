@@ -20,6 +20,8 @@ env = environ.Env(
 	DEBUG=(bool, True),
 	SAVE_STATIC_FILES_CDN=(bool, False),
 	LOG_LEVEL=(str, 'INFO'),
+	NAMESPACE_SUFFIX=(str, 'local'),
+	STORAGES_PREFIX=(str, 'polar-labs-api'),
 )
 
 
@@ -42,6 +44,15 @@ SECRET_KEY = env('SECRET_KEY')
 
 # Comma separated lists of hosts from the .env file
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').strip().split(',')
+
+# you don't need to set this locally, but it will get mad if you don't
+try:
+	CSRF_COOKIE_DOMAIN = env('CSRF_COOKIE_DOMAIN')
+	CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS').strip().split(',')
+except Exception:
+	print(
+		'If you are on a live server make sure to set CSRF_COOKIE_DOMAIN and CSRF_TRUSTED_ORIGINS'
+	)
 
 # We separate the apps that we wrote into their own list
 # so they can be imported in other places to differentiate
@@ -197,6 +208,7 @@ AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL')
 AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN')
 AWS_S3_ACCESS_KEY_ID = env('AWS_S3_ACCESS_KEY_ID')
 AWS_S3_SECRET_ACCESS_KEY = env('AWS_S3_SECRET_ACCESS_KEY')
+AWS_LOCATION = f"{env('STORAGES_PREFIX')}-{env('NAMESPACE_SUFFIX')}"  # A path prefix that will be prepended to all uploads.
 
 # S3 File Prefixes
 S3_BLOG_DIR = 'blog'

@@ -24,15 +24,56 @@ definitions:
           - pip install --no-cache-dir poetry==1.8.2
           - poetry config virtualenvs.in-project true
           - poetry install --no-root --compile
+          - export DATABASE_URL=postgresql://$DB_USER:$DB_PASS@$DB_HOST/$DB_NAME
           - poetry run python manage.py ensure_migrations
           - poetry run python manage.py ensure_tests_run
           - poetry run python manage.py test
         services:
           - postgres
 
+    - step: &build-docker
+        name: Upload image to Digital Ocean
+        image: alpine/doctl:1.27.13 # comes with doctl, kubectl, and helm
+        script:
+          - doctl registry login --expiry-seconds 3600
+          - export IMAGE_NAME=$IMAGE_TAG_NAME:$BITBUCKET_COMMIT
+          - docker build -t $IMAGE_NAME $BITBUCKET_CLONE_DIR
+          - docker push $IMAGE_NAME
+        services:
+          - docker
+
+    - step: &helm-deploy
+        name: Deploy to Kubernetes
+        image: alpine/doctl:1.27.13
+        script:
+          - source set_env.sh
+          - export IMAGE_NAME=$IMAGE_TAG_NAME:$BITBUCKET_COMMIT # this is deterministic, so we can just set it again here
+          - export DATABASE_URL=postgresql://$DB_USER:$DB_PASS@$DB_HOST/$DB_NAME?$DB_PARAMS
+          - doctl kubernetes cluster kubeconfig save $KUBE_CLUSTER_ID
+          - apk add gettext moreutils
+          - helm dependency update ./api_chart
+          - envsubst < ./api_chart/values.yaml | sponge ./api_chart/values.yaml
+          - cat ./api_chart/values.yaml
+          # - helm install api-chart-$NAMESPACE_SUFFIX ./api_chart --dry-run
+          - helm upgrade api-chart-$NAMESPACE_SUFFIX ./api_chart --debug --install --atomic --cleanup-on-fail --force --timeout=120s
+
+    - step: &create-preview-db
+        name: Create Preview DB
+        image: alpine/doctl:1.27.13 # comes with doctl, kubectl, and helm
+        script:
+          - source set_env.sh
+          # a little hack to capture the output of the create command. We don't want to fail the pipeline
+          # if the db already exists, so we capture it, output it, check for the db already exists error.
+          # If we find that error, just exit successfully so we continue the pipeline. If we find Error in
+          # the output AFTER that, it is unexpected and we fail the pipeline.
+          - export DB_CREATE_OUTPUT=$(doctl databases db create $DB_CLUSTER_ID $DB_NAME 2>&1 > /dev/null)
+          - echo "$DB_CREATE_OUTPUT"
+          - echo $DB_CREATE_OUTPUT | grep -q "database name is not available" && exit 0
+          - echo $DB_CREATE_OUTPUT | grep -q "Error" && exit 1
+
 pipelines:
   branches:
-    master:
+    main:
       - step: *django-tests
 
       - stage:
@@ -41,16 +82,55 @@ pipelines:
           trigger: manual
           steps:
             - step:
-                name: Upload image to Digital Ocean
+                name: Set Environment Namespace
                 script:
-                  - export BITBUCKET_COMMIT_SHORT=$(echo $BITBUCKET_COMMIT | cut -c1-7)
-                  - export IMAGE_NAME=$IMAGE_TAG_NAME:$BITBUCKET_COMMIT_SHORT
-                  - docker build -t $IMAGE_NAME .
-                  - docker login $CONTAINER_REGISTRY_HOST -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_PASSWORD
-                  - docker push $IMAGE_NAME
-                services:
-                  - docker
+                  - echo "export NAMESPACE_SUFFIX=production" >> set_env.sh
+                artifacts:
+                  - set_env.sh
+
+            - step: *build-docker
+            - step: *helm-deploy
 
   pull-requests:
     '**': # this runs as default for any branch not elsewhere defined
       - step: *django-tests
+      - stage:
+          name: Deploy Preview Environment
+          deployment: preview
+          trigger: manual
+          steps:
+            - step:
+                name: Set Environment Namespace
+                script:
+                  - echo "export NAMESPACE_SUFFIX=preview-$BITBUCKET_PR_ID" >> set_env.sh
+                  - echo "export DB_NAME=preview-$BITBUCKET_PR_ID" >> set_env.sh # we only set this for preview env cause it's dynamic, permanent envs are in bitbucket settings
+                artifacts:
+                  - set_env.sh
+
+            - step: *build-docker
+            - step: *create-preview-db
+            - step: *helm-deploy
+
+  custom:
+    close-preview-environment: #name of this pipeline
+      - variables:
+          - name: BITBUCKET_PR_ID
+      - step:
+          name: Delete Preview Environment
+          image: alpine/doctl:1.27.13
+          script:
+            - export NAMESPACE_SUFFIX=preview-$BITBUCKET_PR_ID
+            - doctl kubernetes cluster kubeconfig save $KUBE_CLUSTER_ID
+            - helm uninstall api-chart-$NAMESPACE_SUFFIX
+            - doctl databases db delete $DB_CLUSTER_ID preview-$BITBUCKET_PR_ID --force # make sure this matches the env creation of $DB_NAME above
+      - step:
+          name: Delete Preview Environment Static Files
+          image: amazon/aws-cli
+          script:
+            # access key, secret key, and endpoint url env vars are set in BB repository variables
+            - export NAMESPACE_SUFFIX=preview-$BITBUCKET_PR_ID
+            - export AWS_ACCESS_KEY_ID=$AWS_S3_ACCESS_KEY_ID
+            - export AWS_SECRET_ACCESS_KEY=$AWS_S3_SECRET_ACCESS_KEY
+            # Look for the Django setting AWS_LOCATION to check for the name of the preview folder
+            - export S3_LOCATION=s3://$AWS_STORAGE_BUCKET_NAME/$STORAGES_PREFIX-$NAMESPACE_SUFFIX
+            - aws s3 rm --recursive $S3_LOCATION

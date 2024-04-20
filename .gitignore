@@ -10,6 +10,7 @@ static/
 
 # Tooling
 .ruff_cache
+*.tgz
 
 # Backup files #
 *.bak

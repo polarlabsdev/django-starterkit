@@ -1,4 +1,6 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from blog.models import BlogPost, BlogPostTag
 from blog.serializers import BlogPostSerializer, BlogPostTagSerializer
@@ -23,3 +25,8 @@ class BlogPostDetail(RetrieveAPIView):
 	serializer_class = BlogPostSerializer
 	lookup_field = 'pk'
 	lookup_url_kwarg = 'id'
+
+
+class TestHeaders(APIView):
+	def get(self, request, format=None):
+		return Response(request.headers)
