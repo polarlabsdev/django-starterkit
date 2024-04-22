@@ -1,7 +1,8 @@
-namespace: polar-labs-api-${NAMESPACE_SUFFIX}
-appName: polar-labs-api
+namespace: ${APP_NAME}-${NAMESPACE_SUFFIX}
+appName: ${APP_NAME}
 replicas: ${POD_REPLICAS}
 imageLocation: ${IMAGE_NAME}
+registrySecretName: ${REGISTRY_SECRET_NAME}
 containerPorts:
   - name: http
     port: 80
@@ -38,7 +39,7 @@ secrets:
       AWS_S3_SECRET_ACCESS_KEY: ${AWS_S3_SECRET_ACCESS_KEY}
 clusterIssuerName: ${CLUSTER_ISSUER}
 domainName: ${NAMESPACE_SUFFIX}-api.polarlabs.ca
-tlsSecretName: tls-polar-labs-api-${NAMESPACE_SUFFIX}
+tlsSecretName: tls-${APP_NAME}-${NAMESPACE_SUFFIX}
 ingressPaths:
   - path: /
     type: Prefix

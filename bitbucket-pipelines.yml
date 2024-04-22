@@ -54,8 +54,8 @@ definitions:
           - helm dependency update ./api_chart
           - envsubst < ./api_chart/values.yaml | sponge ./api_chart/values.yaml
           - cat ./api_chart/values.yaml
-          # - helm install api-chart-$NAMESPACE_SUFFIX ./api_chart --dry-run
-          - helm upgrade api-chart-$NAMESPACE_SUFFIX ./api_chart --debug --install --atomic --cleanup-on-fail --force --timeout=120s
+          # - helm install $APP_NAME-$NAMESPACE_SUFFIX ./api_chart --dry-run
+          - helm upgrade $APP_NAME-$NAMESPACE_SUFFIX ./api_chart --debug --install --force --timeout=120s
 
     - step: &create-preview-db
         name: Create Preview DB
@@ -121,7 +121,7 @@ pipelines:
           script:
             - export NAMESPACE_SUFFIX=preview-$BITBUCKET_PR_ID
             - doctl kubernetes cluster kubeconfig save $KUBE_CLUSTER_ID
-            - helm uninstall api-chart-$NAMESPACE_SUFFIX
+            - helm uninstall $APP_NAME-$NAMESPACE_SUFFIX
             - doctl databases db delete $DB_CLUSTER_ID preview-$BITBUCKET_PR_ID --force # make sure this matches the env creation of $DB_NAME above
       - step:
           name: Delete Preview Environment Static Files
