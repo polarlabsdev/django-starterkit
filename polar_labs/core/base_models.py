@@ -21,3 +21,15 @@ class BaseUUIDModel(BaseModel):
 
 	class Meta:
 		abstract = True
+
+
+class BaseModelNoId(models.Model):
+	created = models.DateTimeField(auto_now=False, auto_now_add=True)
+	updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+	def save(self, *args, **kwargs):
+		self.full_clean()  # validate fields before save
+		super().save(*args, **kwargs)
+
+	class Meta:
+		abstract = True

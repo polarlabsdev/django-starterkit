@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import logging
 import os
 from pathlib import Path
 
@@ -45,14 +46,22 @@ SECRET_KEY = env('SECRET_KEY')
 # Comma separated lists of hosts from the .env file
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').strip().split(',')
 
+if DEBUG:
+	CORS_ALLOW_ALL_ORIGINS = True
+else:
+	CORS_ALLOWED_ORIGINS = env('CORS_ALLOWED_ORIGINS').strip().split(',')
+
 # you don't need to set this locally, but it will get mad if you don't
 try:
 	CSRF_COOKIE_DOMAIN = env('CSRF_COOKIE_DOMAIN')
 	CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS').strip().split(',')
 except Exception:
-	print(
+	logging.warn(
 		'If you are on a live server make sure to set CSRF_COOKIE_DOMAIN and CSRF_TRUSTED_ORIGINS'
 	)
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+XS_SHARING_ALLOWED_METHODS = ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE']
 
 # We separate the apps that we wrote into their own list
 # so they can be imported in other places to differentiate
@@ -74,6 +83,7 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'corsheaders',
 	'rest_framework',
 	'django_filters',
 	'django_summernote',
@@ -83,6 +93,7 @@ INSTALLED_APPS.extend(PROJECT_APPS)
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -257,9 +268,7 @@ AUTH_USER_MODEL = 'core.PolarLabsUser'
 
 # REST Framework
 REST_FRAMEWORK = {
-	'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-	'PAGE_SIZE': 24,
-	'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+	'DEFAULT_PAGINATION_CLASS': 'core.api_config.PageBasedPagination',
 }
 
 FILTERS_DEFAULT_LOOKUP_EXPR = 'icontains'

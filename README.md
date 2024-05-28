@@ -129,6 +129,11 @@ In production, the admin panel has a number of roles/groups set up to assign to 
 
 To give someone full permissions as a dev, make them a superuser, no group needed. To allow someone to sign into admin, make them a staff user, they will inherit their own individual permissions + the permissions of their group.
 
+## Tips
+
+- End all your urls with a "/"! Django gets kind of quirky around urls without a / at the end, and doesn't play nicely with node fetch (if you're using JS on your front end)
+- Don't forget to run `poetry exec pc_init` at the beginning of each project to configure precommit!
+
 ## Further help
 
 To get more help on the tools used in this project check out:

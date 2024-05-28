@@ -13,5 +13,10 @@ python manage.py ensure_adminuser \
     --username=$DJANGO_SUPERUSER_USERNAME \
     --password=$DJANGO_SUPERUSER_PASSWORD
 
+# In preview envs, preload test data
+if [ "$NAMESPACE_SUFFIX" != "production" ] && [ "$NAMESPACE_SUFFIX" != "staging" ]; then
+  python manage.py loaddata test_data.json
+fi
+
 # daphne must be in pyproject.toml
 daphne -b 0.0.0.0 -p 8000 polar_labs.asgi:application

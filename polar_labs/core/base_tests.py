@@ -11,7 +11,11 @@ from django.test import LiveServerTestCase, TestCase
 # something later we don't need to find all the unit tests and adjust
 # them - can just start adding things.
 class BaseUnitTest(TestCase):
-	pass
+	def setUp(self):
+		print('\n--------\n')
+
+	def tearDown(self):
+		print('\n--------\n')
 
 
 # This class is a utility class we created that extends the built-in

@@ -1,3 +1,5 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,7 +12,10 @@ from blog.serializers import BlogPostSerializer, BlogPostTagSerializer
 class BlogPostList(ListAPIView):
 	queryset = BlogPost.objects.all()
 	serializer_class = BlogPostSerializer
-	filterset_fields = ('tags__name',)
+	filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+	filterset_fields = {'tags__slug': ['in', 'icontains']}
+	search_fields = ['name', 'content']
+	ordering_fields = ['name', 'created', 'updated']
 
 
 class BlogPostTagList(ListAPIView):
