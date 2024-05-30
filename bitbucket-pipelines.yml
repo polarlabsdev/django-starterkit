@@ -1,10 +1,40 @@
 image: python:3.11.1
 
+definitions:
+  services:
+    postgres:
+      image: postgres
+      variables:
+        POSTGRES_DB: "pipelines"
+        POSTGRES_USER: "test_user"
+        POSTGRES_PASSWORD: "test_user_password"
+
+  steps:
+    - step: &django-tests
+        name: Run Django Tests
+        caches:
+          - pip
+        script:
+          - cd $BITBUCKET_CLONE_DIR/polar_labs
+          # match poetry version with the one you're using for your project
+          - pip install --no-cache-dir poetry==1.8.2
+          - poetry config virtualenvs.in-project true
+          - poetry install --no-root --compile
+          - export DATABASE_URL=postgresql://test_user:test_user_password@localhost/pipelines
+          - poetry run python manage.py ensure_migrations
+          - poetry run python manage.py ensure_tests_run
+          - poetry run python manage.py test
+        services:
+          - postgres
+
 pipelines:
-  # branches:
-  #   main:
   pull-requests:
-    "**":
+    "**": # this runs as default for any branch not elsewhere defined
+      - step: *django-tests
+
+  branches:
+    main:
+      - step: *django-tests
       - step:
           name: Mirror to GitHub
           deployment: github
