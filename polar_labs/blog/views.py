@@ -13,7 +13,7 @@ class BlogPostList(ListAPIView):
 	queryset = BlogPost.objects.all()
 	serializer_class = BlogPostSerializer
 	filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-	filterset_fields = {'tags__slug': ['in', 'icontains']}
+	filterset_fields = {'tags__name': ['in', 'icontains']}
 	search_fields = ['name', 'content']
 	ordering_fields = ['name', 'created', 'updated']
 
