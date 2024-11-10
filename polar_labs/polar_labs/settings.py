@@ -15,14 +15,19 @@ import os
 from pathlib import Path
 
 import environ
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 env = environ.Env(
 	# set casting, default value
 	DEBUG=(bool, True),
 	SAVE_STATIC_FILES_CDN=(bool, False),
 	LOG_LEVEL=(str, 'INFO'),
-	NAMESPACE_SUFFIX=(str, 'local'),
+	ENV_NAME=(str, 'local'),
 	STORAGES_PREFIX=(str, 'polar-labs-api'),
+	SENTRY_DSN=(str, ''),
+	SENTRY_RELEASE_NAME=(str, ''),
 )
 
 
@@ -107,7 +112,7 @@ ROOT_URLCONF = 'polar_labs.urls'
 TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
-		'DIRS': [],
+		'DIRS': [os.path.join(BASE_DIR, 'templates')],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
@@ -219,7 +224,7 @@ AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL')
 AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN')
 AWS_S3_ACCESS_KEY_ID = env('AWS_S3_ACCESS_KEY_ID')
 AWS_S3_SECRET_ACCESS_KEY = env('AWS_S3_SECRET_ACCESS_KEY')
-AWS_LOCATION = f"{env('STORAGES_PREFIX')}-{env('NAMESPACE_SUFFIX')}"  # A path prefix that will be prepended to all uploads.
+AWS_LOCATION = f"{env('STORAGES_PREFIX')}-{env('ENV_NAME')}"  # A path prefix that will be prepended to all uploads.
 
 # S3 File Prefixes
 S3_BLOG_DIR = 'blog'
@@ -252,10 +257,11 @@ SUMMERNOTE_CONFIG = {
 					'clear',
 				],
 			],
-			['para', ['ul', 'ol', 'paragraph']],
-			['insert', ['link']],
+			['para', ['ul', 'ol' 'paragraph']],
+			['insert', ['link', 'picture', 'hr']],
 			['view', ['fullscreen', 'codeview', 'help']],
-		]
+		],
+		'attachment_storage_class': 'storages.backends.s3.S3Storage',
 	},
 }
 
@@ -302,3 +308,26 @@ JET_SIDE_MENU_COMPACT = True
 #         ],
 #     },
 # ]
+
+# Sentry settings!
+if env('SENTRY_DSN'):
+	sentry_options = {
+		'dsn': env('SENTRY_DSN'),
+		'integrations': [
+			LoggingIntegration(event_level=logging.WARNING),
+			DjangoIntegration(),
+		],
+		'traces_sample_rate': 0,
+		'profiles_sample_rate': 0,
+		# We don't want a separate Sentry environment for every preview environment. Just bucket them all under 'preview' in Sentry
+		'environment': 'preview' if env('ENV_NAME').startswith('preview') else env('ENV_NAME'),
+	}
+
+	if env('SENTRY_RELEASE_NAME'):
+		sentry_options['release'] = env('SENTRY_RELEASE_NAME')
+
+	if env('ENV_NAME') == 'production':
+		sentry_options['traces_sample_rate'] = 0.33
+		sentry_options['profiles_sample_rate'] = 0.33
+
+	sentry_sdk.init(**sentry_options)

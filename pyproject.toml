@@ -21,6 +21,14 @@ format = "ruff format polar_labs/"
 format_check = "ruff format --check polar_labs/"
 bandit = "bandit -r polar_labs/ -c .bandit.yml"
 
+[tool.poe.tasks.run_integ_tests]
+cmd = "python -m pytest"
+env = { PYTHONPATH = "polar_labs/" }
+
+[tool.pytest.ini_options]
+python_files = "*.tavern.yaml"
+tavern-global-cfg = "tavern_config.yaml"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 django = "^5.0.2"
@@ -35,7 +43,12 @@ django-autoslug = "^1.9.9"
 django-filter = "^24.2"
 requests = "^2.31.0"
 daphne = "^4.1.2"
+readtime = "^3.0.0"
 django-cors-headers = "^4.3.1"
+sentry-sdk = { extras = ["django"], version = "^2.5.0" }
+future = "^1.0.0"
+tavern = "^2.11.0"
+jsonschema = "^4.23.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.8"
@@ -67,7 +80,23 @@ select = [
   "I",
 ]
 # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
-ignore = ["W191", "E111", "E114", "E117", "D206", "D300", "Q000", "Q001", "Q002", "Q003", "COM812", "COM819", "ISC001", "ISC002", "E501"]
+ignore = [
+  "W191",
+  "E111",
+  "E114",
+  "E117",
+  "D206",
+  "D300",
+  "Q000",
+  "Q001",
+  "Q002",
+  "Q003",
+  "COM812",
+  "COM819",
+  "ISC001",
+  "ISC002",
+  "E501",
+]
 
 [build-system]
 requires = ["poetry-core"]

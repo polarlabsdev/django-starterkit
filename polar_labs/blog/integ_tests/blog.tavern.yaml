@@ -1,0 +1,29 @@
+# Every test file has one or more tests...
+test_name: Get some sample data from the blog and tags models
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure tags come back
+    max_retries: 3
+
+    # Define the request to be made...
+    request:
+      url: "{base_url:s}/blog/tags/"
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      verify_response_with:
+        function: blog.integ_tests.schemas:verify_tags_shape
+
+  - name: Make sure posts come back
+    max_retries: 3
+    request:
+      url: "{base_url:s}/blog/"
+      method: GET
+
+    response:
+      status_code: 200
+      verify_response_with:
+        function: blog.integ_tests.schemas:verify_list_shape

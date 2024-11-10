@@ -1,0 +1,9 @@
+# tavern_config.yaml
+---
+# Each file should have a name and description
+name: Global Config Vars
+description: Share all the things
+
+# Variables should just be a mapping of key: value pairs
+variables:
+  base_url: "{tavern.env_vars.API_TEST_URL}"

@@ -1,4 +1,3 @@
-import os
 from pprint import pformat
 
 import requests
@@ -28,7 +27,7 @@ class LiveApiTestCase(LiveServerTestCase):
 	def setUpClass(cls):
 		super().setUpClass()
 
-		cls.test_url = os.environ.get('API_TEST_URL', cls.live_server_url)
+		cls.test_url = cls.live_server_url
 
 		if cls.test_url != cls.live_server_url:
 			print(f'USING LIVE TEST URL: {cls.test_url}')

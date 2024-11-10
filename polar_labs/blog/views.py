@@ -1,20 +1,18 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from blog.models import BlogPost, BlogPostTag
-from blog.serializers import BlogPostSerializer, BlogPostTagSerializer
+from blog.serializers import BlogPostDetailSerializer, BlogPostListSerializer, BlogPostTagSerializer
 
 
 # https://www.django-rest-framework.org/api-guide/generic-views/#genericapiview
 class BlogPostList(ListAPIView):
 	queryset = BlogPost.objects.all()
-	serializer_class = BlogPostSerializer
+	serializer_class = BlogPostListSerializer
 	filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-	filterset_fields = {'tags__name': ['in', 'icontains']}
-	search_fields = ['name', 'content']
+	filterset_fields = {'tags__slug': ['in', 'icontains']}
+	search_fields = ['name', 'summary', 'content']
 	ordering_fields = ['name', 'created', 'updated']
 
 
@@ -27,11 +25,13 @@ class BlogPostTagList(ListAPIView):
 # that would invalidate anyone's bookmarks or similar.
 class BlogPostDetail(RetrieveAPIView):
 	queryset = BlogPost.objects.all()
-	serializer_class = BlogPostSerializer
-	lookup_field = 'pk'
-	lookup_url_kwarg = 'id'
+	serializer_class = BlogPostDetailSerializer
+	lookup_field = 'slug'
+	lookup_url_kwarg = 'slug'
 
 
-class TestHeaders(APIView):
-	def get(self, request, format=None):
-		return Response(request.headers)
+class SuggestedBlogPostList(ListAPIView):
+	serializer_class = BlogPostListSerializer
+
+	def get_queryset(self):
+		return BlogPost.get_suggested_posts()

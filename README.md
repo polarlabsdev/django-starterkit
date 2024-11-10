@@ -1,4 +1,4 @@
-# Polar Labs Django REST API Starter Kit #
+# Polar Labs Django REST API Starter Kit
 
 This repo is a standard starter kit for a Django REST API powered by Django Rest Framework. By following the README below, updating your settings.py to match your project needs, and configuring your CI/CD with the right environments, you should have a basic Django API out of the box letting you get right to the coding.
 
@@ -41,8 +41,7 @@ Lastly, you need to install the [precommit](https://pre-commit.com/) hooks into 
 
 ```
 # install pre-commit (not techincally part of poetry, but still needs to be done)
-pre-commit install
-pre-commit autoupdate
+poetry exec pc_init
 ```
 
 **3. Environment**
@@ -78,7 +77,7 @@ As mentioned, run `python manage.py runserver` for a dev server. The server will
 
 You can also find the Django Admin Panel at `http://localhost:8000/admin`. We have included the [django-jet](https://django-jet-reboot.readthedocs.io/en/latest/) theme to make it much prettier.
 
-## Running unit tests
+## Running Tests
 
 Run `python manage.py test {optional-name-of-app}` to execute the tests. Django will generate a test database to work with, so don't worry about losing any data. Tests are stored with their respective target app (the folders inside `polar_labs` that you register in `settings.py`).
 
@@ -86,9 +85,125 @@ We have 2 base classes that we provide for some extra utility you can find in `p
 
 **BaseUnitTest:** This is currently just an extension of the built in Django `TestCase`. But by extending from it early, you give yourself room to add custom functionality later.
 
-**LiveApiTestCase**: This is an extension of LiveServerTestCase. We added an ability to use an external url to run the same tests against a live server and a number of convenience methods that need to run on all api tests (like don't be an error code unless we expect an error code).
+**LiveApiTestCase**: This is an extension of LiveServerTestCase. This is kind of like a pseudo-integration test. It boots up a server in the background and runs your tests against that server as if it were a real one. This allows you to simulate HTTP requests and check responses locally and in CI without having to be running a real staging server.
 
 Finally, we recommend adding `poetry run python manage.py ensure_tests_run` to your CI in order to ensure you didn't mess up the naming scheme! It is in our example `bitbucket-pipelines.yml`.
+
+## Integration Testing with Tavern
+
+This project uses [Tavern](https://tavern.readthedocs.io/en/latest/) for integration testing of API endpoints. Tavern is built on top of pytest and provides a YAML-based syntax for defining API tests.
+
+### Overview
+
+Our integration tests verify API endpoints against live servers (staging and production) to ensure:
+
+- Expected HTTP response codes
+- Response data shape validation using JSON Schema
+- End-to-end functionality across service boundaries
+
+### Running Integration Tests
+
+Integration tests can be run using the poetry task defined in `pyproject.toml`:
+
+```bash
+poetry exec run_integ_tests
+```
+
+This command:
+
+- Uses the global configuration from `tavern_config.yaml`
+- Runs all test files matching the pattern `*.tavern.yaml`
+- Can be executed locally or in CI/CD pipelines
+
+### Configuration
+
+Global test configuration is stored in `tavern_config.yaml`. This includes:
+
+- Base URLs for different environments
+- Common headers
+- Global variables
+- Retry configurations
+
+### Test Files
+
+Test files follow the naming pattern `*.tavern.yaml` and are organized by feature area. For example:
+
+- `polar_labs/blog/integ_tests/blog.tavern.yaml`
+
+### Example Test Structure
+
+```yaml
+# blog.tavern.yaml
+test_name: Verify blog post retrieval
+stages:
+  - name: Get single blog post
+    request:
+      url: "{host}/api/blog/posts/{post_id}"
+      method: GET
+    response:
+      status_code: 200
+      verify_response_with:
+        function: polar_labs.blog.integ_tests.verify_blog_post_schema
+```
+
+### Response Schema Validation
+
+We use Python's [jsonschema](https://python-jsonschema.readthedocs.io/) library to validate response shapes. Our approach combines:
+
+1. YAML-defined tests in `*.tavern.yaml` files
+2. Python functions for response validation
+3. Utility functions in `polar_labs/core/utils/tavern.py` that:
+   - Generate consistent schemas
+   - Enforce required properties
+   - Fail on unexpected properties
+   - Handle retry logic for CI/CD scenarios
+
+### Schema Validation Example
+
+```python
+from polar_labs.core.utils.tavern import create_schema
+
+def verify_blog_post_schema(response):
+    schema = create_schema({
+        "id": "integer",
+        "title": "string",
+        "content": "string",
+        "author": {
+            "id": "integer",
+            "name": "string"
+        }
+    })
+    return schema.matches(response.json())
+```
+
+## Best Practices
+
+1. **Environment Testing**:
+
+   - Run tests against staging before production deployments
+   - Use the same tests as smoke tests in production
+   - Configure appropriate timeouts and retries for CI/CD
+
+2. **Schema Validation**:
+
+   - Always validate response shapes
+   - Use the utility functions in `tavern.py` for consistent schema generation
+   - Define clear, reusable schemas for common response patterns
+
+3. **Test Organization**:
+   - Group tests by feature area
+   - Use clear, descriptive test names
+   - Include both happy path and error cases
+
+## Future Improvements
+
+Some areas identified for potential enhancement:
+
+- Expanded test coverage across all endpoints
+- More comprehensive schema validation patterns
+- Additional utility functions for common testing scenarios
+- Performance testing integration
+- Enhanced error reporting and logging
 
 ## Other Utility Classes We Include
 
@@ -97,7 +212,6 @@ Finally, we recommend adding `poetry run python manage.py ensure_tests_run` to y
 **BaseModel in polar_labs/core/base_models.py:** An extension of the built-in `Model` class that automatically adds an id, created, and updated field. It also adds validation to the `save()` method by default. You can extend your models from this class and get these plus anything you add by default.
 
 **PolarLabsUser in polar_labs/core/models.py:** This is an extension of the default User model that doesn't currently add anything. However, it is a MAJOR pain in the ass to change your User model late in the game. Using this class from day 1 means you can extend it if you need to. Note the standard approach to user data in Django is to create a new model called Profile (or similar) and one-to-one with the User model.
-
 
 ## Deployments
 

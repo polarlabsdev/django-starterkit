@@ -13,7 +13,9 @@ class Command(BaseCommand):
 		for root, dirs, files in os.walk(settings.BASE_DIR, topdown=True):
 			# skip special folders
 			for d in list(dirs):
-				if re.search(r'(^\.|fixtures?|resources|migrations|static|__py)', d):
+				if re.search(
+					r'(^\.|fixtures?|resources|migrations|static|templates|integ_tests|__py)', d
+				):
 					dirs.remove(d)
 
 			# if this is not the root, there must be an __init__

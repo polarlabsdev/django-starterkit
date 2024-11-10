@@ -14,7 +14,7 @@ python manage.py ensure_adminuser \
     --password=$DJANGO_SUPERUSER_PASSWORD
 
 # In preview envs, preload test data
-if [ "$NAMESPACE_SUFFIX" != "production" ] && [ "$NAMESPACE_SUFFIX" != "staging" ]; then
+if [ "$ENV_NAME" != "production" ] && [ "$ENV_NAME" != "staging" ]; then
   python manage.py loaddata test_data.json
 fi
 

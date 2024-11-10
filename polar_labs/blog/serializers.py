@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from blog.models import BlogPost, BlogPostTag
 
@@ -6,23 +6,46 @@ from blog.models import BlogPost, BlogPostTag
 class BlogPostTagSerializer(ModelSerializer):
 	class Meta:
 		model = BlogPostTag
-		fields = [
-			'id',
-			'name',
-		]
+		fields = ['name', 'slug', 'color']
 
 
-class BlogPostSerializer(ModelSerializer):
+class BlogPostListSerializer(ModelSerializer):
 	tags = BlogPostTagSerializer(many=True, read_only=True)
 
 	class Meta:
 		model = BlogPost
 		fields = [
-			'id',
 			'name',
 			'slug',
+			'summary',
+			'tags',
+			'thumbnail',
+			'read_time',
+			'created',
+			'updated',
+		]
+
+
+class BlogPostDetailSerializer(ModelSerializer):
+	tags = BlogPostTagSerializer(many=True, read_only=True)
+	suggested_posts = SerializerMethodField()
+
+	class Meta:
+		model = BlogPost
+		fields = [
+			'name',
+			'slug',
+			'summary',
 			'content',
 			'tags',
 			'banner',
-			'thumbnail',
+			'created',
+			'updated',
+			'suggested_posts',
 		]
+
+	def get_suggested_posts(self, obj):
+		posts = BlogPost.get_suggested_posts(obj)
+		serializer = BlogPostListSerializer(posts, many=True)
+
+		return serializer.data
