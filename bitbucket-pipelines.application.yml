@@ -137,7 +137,7 @@ pipelines:
                   # propose-version assumes you're in a git repository
                   - export SENTRY_RELEASE_NAME=$(sentry-cli releases propose-version)
                   - sentry-cli releases new $SENTRY_RELEASE_NAME
-                  - sentry-cli releases set-commits --auto $SENTRY_RELEASE_NAME
+                  - sentry-cli releases set-commits --auto --ignore-missing $SENTRY_RELEASE_NAME
                   # add the env var to our set environment script for later deploy steps
                   - echo "export SENTRY_RELEASE_NAME=$SENTRY_RELEASE_NAME" >> set_env.sh
                 artifacts:
@@ -166,7 +166,7 @@ pipelines:
                 script:
                   - echo "export ENV_NAME=preview-$BITBUCKET_PR_ID" >> set_env.sh
                   - echo "export DB_NAME=preview-$BITBUCKET_PR_ID" >> set_env.sh # we only set this for preview env cause it's dynamic, permanent envs are in bitbucket settings
-                  - echo "export API_TEST_URL=https://preview-$BITBUCKET_PR_ID-api.polarlabs.ca" >> set_env.sh
+                  - echo "export API_TEST_URL=https://preview-$BITBUCKET_PR_ID-api.$BASE_URL" >> set_env.sh
                 artifacts:
                   - set_env.sh
 
