@@ -11,6 +11,7 @@ envVars:
   DEBUG: ${DEBUG} # bool
   ALLOWED_HOSTS: "${ALLOWED_HOSTS}" # comma separated list of allowed hosts
   CORS_ALLOWED_ORIGINS: "${CORS_ALLOWED_ORIGINS}" # comma separated list of allowed CORS origins with protocol
+  CORS_ALLOWED_ORIGIN_REGEXES: "${CORS_ALLOWED_ORIGIN_REGEXES}" # comma separated list of allowed CORS origins with protocol as regexes
   CSRF_COOKIE_DOMAIN: ${CSRF_COOKIE_DOMAIN} # .yourwebsite.com, remove the first . if you don't want to allow subdomains
   CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS} # comma separated list of allowed csrf origins, https://*.example.com for example
   SAVE_STATIC_FILES_CDN: ${SAVE_STATIC_FILES_CDN} # bool
@@ -44,7 +45,7 @@ clusterIssuerName: ${CLUSTER_ISSUER}
 tlsSecretName: tls-${APP_NAME}-${ENV_NAME}
 disableContentSizeChecksNginx: true
 hosts:
-  - domainName: ${ENV_NAME}-api.polarlabs.ca
+  - domainName: ${ENV_NAME}-api.${BASE_URL}
     ingressPaths:
       - path: /
         type: Prefix

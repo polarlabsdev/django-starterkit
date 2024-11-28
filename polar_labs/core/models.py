@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 
 
-class PolarLabsUser(AbstractUser):
+class CoreUser(AbstractUser):
 	pass
 	# add additional fields in here
 

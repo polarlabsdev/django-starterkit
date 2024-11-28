@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import logging
 import os
+import re
 from pathlib import Path
 
 import environ
@@ -28,6 +29,8 @@ env = environ.Env(
 	STORAGES_PREFIX=(str, 'polar-labs-api'),
 	SENTRY_DSN=(str, ''),
 	SENTRY_RELEASE_NAME=(str, ''),
+	CORS_ALLOWED_ORIGINS=(str, ''),
+	CORS_ALLOWED_ORIGIN_REGEXES=(str, ''),
 )
 
 
@@ -51,10 +54,21 @@ SECRET_KEY = env('SECRET_KEY')
 # Comma separated lists of hosts from the .env file
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').strip().split(',')
 
-if DEBUG:
+if DEBUG or env('CORS_ALLOW_ALL_ORIGINS'):
 	CORS_ALLOW_ALL_ORIGINS = True
 else:
-	CORS_ALLOWED_ORIGINS = env('CORS_ALLOWED_ORIGINS').strip().split(',')
+	if env('CORS_ALLOWED_ORIGINS'):
+		CORS_ALLOWED_ORIGINS = env('CORS_ALLOWED_ORIGINS').strip().split(',')
+
+	# CORS_ALLOWED_ORIGIN_REGEXES are regular expressions that match domains that can make requests
+	# Example:
+	# "^https?://([a-zA-Z0–9-]+\.)+example\.com$
+	# would allow requests from any subdomain of example.com using http or https
+
+	if env('CORS_ALLOWED_ORIGIN_REGEXES'):
+		CORS_ALLOWED_ORIGIN_REGEXES = [
+			re.compile(regex) for regex in env('CORS_ALLOWED_ORIGIN_REGEXES').strip().split(',')
+		]
 
 # you don't need to set this locally, but it will get mad if you don't
 try:
@@ -270,7 +284,7 @@ SUMMERNOTE_CONFIG = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'core.PolarLabsUser'
+AUTH_USER_MODEL = 'core.CoreUser'
 
 # REST Framework
 REST_FRAMEWORK = {

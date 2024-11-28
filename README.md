@@ -211,7 +211,7 @@ Some areas identified for potential enhancement:
 
 **BaseModel in polar_labs/core/base_models.py:** An extension of the built-in `Model` class that automatically adds an id, created, and updated field. It also adds validation to the `save()` method by default. You can extend your models from this class and get these plus anything you add by default.
 
-**PolarLabsUser in polar_labs/core/models.py:** This is an extension of the default User model that doesn't currently add anything. However, it is a MAJOR pain in the ass to change your User model late in the game. Using this class from day 1 means you can extend it if you need to. Note the standard approach to user data in Django is to create a new model called Profile (or similar) and one-to-one with the User model.
+**CoreUser in polar_labs/core/models.py:** This is an extension of the default User model that doesn't currently add anything. However, it is a MAJOR pain in the ass to change your User model late in the game. Using this class from day 1 means you can extend it if you need to. Note the standard approach to user data in Django is to create a new model called Profile (or similar) and one-to-one with the User model.
 
 ## Deployments
 
