@@ -284,7 +284,7 @@ SUMMERNOTE_CONFIG = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'core.PolarLabsUser'
+AUTH_USER_MODEL = 'core.CoreUser'
 
 # REST Framework
 REST_FRAMEWORK = {
