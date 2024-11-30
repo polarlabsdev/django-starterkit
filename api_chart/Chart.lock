@@ -1,6 +1,6 @@
 dependencies:
 - name: pl-standard-chart
   repository: https://helm.polarlabs.ca
-  version: 2.0.1
-digest: sha256:97e74ee3918303b4f183acf40c76166418e79822cc84316e5f99aaf113633522
-generated: "2024-11-26T21:20:47.914997-05:00"
+  version: 2.1.1
+digest: sha256:998a0a2b8122474b4dda1a785f68d5992bc17fa09decaaaf66d318cc24d9e0f6
+generated: "2024-11-29T21:59:55.592123269-05:00"
